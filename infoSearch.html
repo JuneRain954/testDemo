@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>搜索</title>
+        <link rel="stylesheet" href="../bootstrap-3.3.7-dist/css/bootstrap.min.css">
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            .clearfix::before,
+            .claerfix::after{
+                content: '';
+                display: table;
+                clear: both;
+            }
+            #container{
+                width: 600px;
+                height: 200px;
+                margin: 100px auto;
+            }
+            #searchBar{
+                display: block;
+                height: 50px;
+                width: 100%;
+                line-height: 50px;
+                margin-top: 70px;
+                font-size: 20px;
+                text-align: center;
+                border: 2px rgba(0, 9, 12, 0.3) solid;
+                border-radius: 20px;
+                background-color: bisque;
+            }
+            #searchBar:focus{
+                outline: none;
+                border: 2px rgba(135, 206, 235, 0.8) solid;
+            }
+            #searchTips{
+                width: 570px;
+                margin-left: 15px;
+                list-style: none;
+                background-color: rgba(255, 228, 196, 0.3);
+                border: 2px rgba(135, 206, 235, 0.8) dotted;
+                border-top: none;
+                border-bottom: none;
+            }
+            #searchTips li{
+                width: 100%;
+            }
+            #searchTips a{
+                text-decoration: none;
+                padding: 4px;
+                padding-left: 10px;
+                color: black;
+                font-size: 20px;
+                width: 100%;
+                display: block;
+            }
+            #searchTips a:hover{
+                background-color: rgba(135, 206, 235, 0.8);
+            }
+        </style>
+        <script>
+            function getInfo(data){
+                var oSearchTips = document.getElementById("searchTips");
+                oSearchTips.innerHTML = "";
+                oSearchTips.style.borderBottom = "2px rgba(135, 206, 235, 0.8) dotted";
+                var info = data.s;
+                for(var i = 0; i < info.length; i++){
+                    var newLi = document.createElement("li");
+                    var newA = document.createElement("a");
+                    newA.innerHTML = info[i];
+                    newA.href = "https://www.baidu.com/s?wd=" + info[i];
+                    newA.target = "_blank";
+                    newLi.appendChild(newA);
+                    oSearchTips.appendChild(newLi);
+                }
+            }
+        </script>
+        <script>
+            window.onload = function(){
+                var oContainer = document.getElementById("container");
+                var oInput = document.getElementById("searchBar");
+                var oSearchBar = document.getElementById("searchBar");
+                var oSearchTips = document.getElementById("searchTips");
+                oSearchBar.onkeyup = function(){
+                    if(!oSearchBar.value){
+                        oSearchTips.style.display = 'none';
+                    }else{
+                        oSearchTips.style.display = 'block';
+                        var oScript = document.createElement("script");
+                        oScript.src = `http://suggestion.baidu.com/su?wd=${oSearchBar.value}&cb=getInfo`;
+                        document.body.appendChild(oScript);
+                    }
+                };
+            };
+        </script>
+    </head>
+    <body>
+        <div id="container" class="clearfix">
+            <input type="text" id="searchBar" placeholder="输入搜索内容">
+            <ul id="searchTips" class="clearfix"></ul>
+        </div>
+    </body>
+</html>
