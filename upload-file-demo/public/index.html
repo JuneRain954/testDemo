@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>upload-file</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script>
+</head>
+<body>
+  <input type="file" name="" id="upload-file" multiple>
+  <script>
+    const BASE_URL = "http://localhost:3000/uploadFile";
+    const iptElement = document.querySelector("#upload-file");
+    iptElement.addEventListener("change", () => {
+      console.log("[change] ===> ", iptElement.files);
+      // uplaodFile();
+      // uploadFiles();
+      // uploadFilesWithFields();
+      uploadAnyFiles();
+    })
+
+
+    function uplaodFile(){
+      const fd = new FormData();
+      fd.set("single-file", iptElement.files[0]);
+      request({method: "POST", url: `${BASE_URL}/file`, data: fd});
+    }
+
+    function uploadFiles(){
+      const fileList = [...iptElement.files];
+      const fd = new FormData();
+      fileList.forEach((file, idx) => {
+        fd.append("one-field", file);
+      })
+      request({method: "POST", url: `${BASE_URL}/files`, data: fd});
+    }
+
+    function uploadFilesWithFields(){
+      const fileList = [...iptElement.files];
+      const fd = new FormData();
+      fileList.forEach((file, idx) => {
+        const fieldName = (idx <= 1) ? "file-fields-one" : "file-fields-two";
+        fd.append(fieldName, file);
+      })
+      request({method: "POST", url: `${BASE_URL}/files-fields`, data: fd});
+    }
+
+    function uploadAnyFiles(){
+      const fileList = [...iptElement.files];
+      const fd = new FormData();
+      fileList.forEach((file => {
+        const fieldName = `file-${randomStr()}`;
+        fd.append(fieldName, file);
+      }))
+      request({method: "POST", url: `${BASE_URL}/any-files`, data: fd})
+    }
+
+    function request(settings = {}){
+      return axios({
+        method: settings.method || "GET",
+        url: settings.url || "",
+        data: settings.data || {},
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      })
+    }
+
+    function randomStr(){
+      return (Math.random() * 0.001).toString(36).slice(-5);
+    }
+
+  </script>
+</body>
+</html>
